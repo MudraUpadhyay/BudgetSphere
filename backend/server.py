@@ -646,7 +646,7 @@ async def predict_goal_risk(goal_id: str, user_id: str = Depends(get_current_use
     
     # Calculate progress
     remaining = goal['target_amount'] - goal['current_amount']
-    deadline = datetime.fromisoformat(goal['deadline'])
+    deadline = datetime.fromisoformat(goal['deadline']).replace(tzinfo=timezone.utc)
     days_remaining = (deadline - datetime.now(timezone.utc)).days
     months_remaining = days_remaining / 30
     

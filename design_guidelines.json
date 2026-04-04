@@ -1,0 +1,89 @@
+{
+  "theme": "light",
+  "archetype": "Archetype 1 (Organic & Earthy)",
+  "typography": {
+    "heading_font": "Outfit",
+    "body_font": "Manrope",
+    "scale": {
+      "h1": "text-4xl sm:text-5xl lg:text-6xl tracking-tight leading-none",
+      "h2": "text-2xl sm:text-3xl lg:text-4xl tracking-tight leading-none",
+      "h3": "text-xl sm:text-2xl tracking-tight",
+      "h4": "text-lg sm:text-xl",
+      "body": "text-base leading-relaxed",
+      "small": "text-sm",
+      "label": "text-xs tracking-[0.2em] uppercase"
+    },
+    "guidelines": "Do not use Inter, Roboto, or generic sans for headings. Use Outfit for clean, aesthetic presence and Manrope for legible data. Avoid defaulting to bold; use light or medium weights for premium feel."
+  },
+  "colors": {
+    "background": "#F7F6F2",
+    "surface": "#FFFFFF",
+    "surface_secondary": "#F0EEE7",
+    "text_primary": "#2C2825",
+    "text_secondary": "#6E6A64",
+    "accents": {
+      "positive": "#4A6B53",
+      "negative": "#CC6C5B",
+      "warning": "#D4A373",
+      "ai_magic": "#A1B5D8",
+      "border": "#E6E3D8"
+    },
+    "guidelines": "Strictly avoid default SaaS blue, teal, or neon. Use the provided organic palette (sand, moss, terracotta) to build a calm, low-anxiety financial experience."
+  },
+  "spacing_and_layout": {
+    "general": "Generous Spacing Philosophy. Use 2-3x more spacing than typical designs (p-6, p-8, p-12 inside containers).",
+    "grid_system": "Bento Control Room grid for dashboard, using gap-6. Every pixel utilized, no jagged bottoms. Mobile-first grid-cols-1 md:grid-cols-3 lg:grid-cols-4.",
+    "container": "Max-width containers (max-w-7xl) centered with mx-auto."
+  },
+  "surface_styles": {
+    "cards": "Flat solid background (bg-white), 1px subtle border (border-[#E6E3D8]), subtle shadow (shadow-[0_4px_24px_rgba(44,40,37,0.04)]), rounded-2xl. Internal padding p-6 or p-8.",
+    "header": "Crystal Glassmorphism: backdrop-blur-xl bg-white/70 (with background saturation if possible), 1px bottom border border-white/40.",
+    "ai_elements": "Subtle background tint (bg-[#F0EEE7]) with an accent color (ai_magic or positive) left border or subtle badge style."
+  },
+  "motion_and_interactions": {
+    "hover": "Slight lift (-translate-y-1), subtle shadow increase, border color darken slightly.",
+    "click": "Scale down (scale-[0.98]).",
+    "page_load": "Staggered fade-up for bento grid children using Framer Motion.",
+    "transitions": "transition-all duration-300 ease-out"
+  },
+  "components": {
+    "financial_health_score": "Hero card component. Number in text-6xl+, tracking-tighter. Color: positive (Moss Green) if high. Includes subtext using label scale. Place 'Financial Behavior Profile' badge near this.",
+    "financial_behavior_profile": "Pill tag (rounded-full) showing 'Smart Saver', 'Spender', 'Balanced' with dynamic AI suggestion text. Use subtle bg (bg-[#F0EEE7]) and text_primary.",
+    "expense_prediction": "Area or Line chart using Recharts. Soft curves (monotone), no grid lines or very faint dashed lines. Tooltip should match card surface style.",
+    "anomaly_alerts": "Floating or stacked insights list. Use Terracotta (#CC6C5B) accent for overspending. Include 'Tracing Beam' or subtle pulsing dot for unread alerts.",
+    "budget_auto_suggestion": "List/table layout. Show current vs. suggested monthly budget. Use subtle progress bars.",
+    "affordability_calculator": "Input/Calculator widget. User enters item + price. Instant visual feedback: ✅ (Affordable), ⚠️ (Risky), ❌ (Not Recommended) with supporting text.",
+    "goal_risk_predictor": "Card with progress bar. Highlight 'trajectory' showing if user is on track or missing goal.",
+    "nlp_expense_entry": "Prominent 'command-palette' style input field mimicking a search bar at the top or dedicated card. 'Spent 500 on food yesterday'. Pressing Enter parses it.",
+    "transaction_history": "Clean table or list. Left-aligned data. Use Manrope for numbers. Use positive color for income, text_primary for expense."
+  },
+  "icons": {
+    "library": "lucide-react",
+    "style": "Stroke width 1.5, standard size (w-5 h-5), matching text color."
+  },
+  "media_urls": {
+    "user_avatars": [
+      "https://images.unsplash.com/photo-1566753323558-f4e0952af115?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2Nzh8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBwb3J0cmFpdCUyMHNtaWxpbmclMjB1c2VyJTIwYXZhdGFyfGVufDB8fHx8MTc3NTI5NTYyOXww&ixlib=rb-4.1.0&q=85",
+      "https://images.unsplash.com/photo-1502452213786-a5bc0a67e963?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2Nzh8MHwxfHNlYXJjaHwyfHxwcm9mZXNzaW9uYWwlMjBwb3J0cmFpdCUyMHNtaWxpbmclMjB1c2VyJTIwYXZhdGFyfGVufDB8fHx8MTc3NTI5NTYyOXww&ixlib=rb-4.1.0&q=85"
+    ],
+    "bank_logos": [
+      "https://images.unsplash.com/photo-1649734929640-d0c0f79da545?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2Njl8MHwxfHNlYXJjaHwxfHxiYW5rJTIwbG9nbyUyMGFic3RyYWN0JTIwaWNvbnxlbnwwfHx8fDE3NzUyOTU2Mjl8MA&ixlib=rb-4.1.0&q=85",
+      "https://images.unsplash.com/photo-1679676057052-69f07449ea8e?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2Njl8MHwxfHNlYXJjaHwyfHxiYW5rJTIwbG9nbyUyMGFic3RyYWN0JTIwaWNvbnxlbnwwfHx8fDE3NzUyOTU2Mjl8MA&ixlib=rb-4.1.0&q=85"
+    ]
+  },
+  "accessibility": {
+    "contrast": "Ensure text contrast ratio meets APCA/WCAG standards.",
+    "testing": "All interactive elements MUST have data-testid attributes (e.g., data-testid='nlp-expense-input')."
+  },
+  "instructions_to_main_agent": [
+    "Load fonts from Google Fonts: Outfit and Manrope.",
+    "Use Tailwind CSS for all layout and styling. Do not use plain CSS for component styles.",
+    "Implement Shadcn UI for standard interactives but STRIP the Vercel-look by applying the surface_styles defined here.",
+    "Use framer-motion for smooth UI transitions (staggered entries).",
+    "Build the dashboard using a bento-grid layout (Control Room mode) with gap-6.",
+    "Create realistic mock data for all AI features (Financial Health, AI Profile, Predictions).",
+    "Do not use generic SaaS blue colors. Strictly adhere to the warm sand/moss green/terracotta palette.",
+    "Follow 'Generous Spacing Philosophy' — do not cram content.",
+    "Never use placeholder URLs for images; use the provided media_urls."
+  ]
+}

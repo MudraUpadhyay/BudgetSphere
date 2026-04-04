@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import axios from 'axios';
 import '@/App.css';
+import './i18n';
+import { ThemeProvider } from '@/context/ThemeContext';
 import { Toaster } from '@/components/ui/sonner';
 import { toast } from 'sonner';
 
@@ -92,84 +94,86 @@ function App() {
   }
 
   return (
-    <div className="App app-container">
-      <BrowserRouter>
-        <Routes>
-          <Route
-            path="/login"
-            element={
-              isAuthenticated ? (
-                <Navigate to="/dashboard" replace />
-              ) : (
-                <AuthPage onLogin={handleLogin} />
-              )
-            }
-          />
-          <Route
-            path="/dashboard"
-            element={
-              isAuthenticated ? (
-                <Dashboard user={user} onLogout={handleLogout} />
-              ) : (
-                <Navigate to="/login" replace />
-              )
-            }
-          />
-          <Route
-            path="/transactions"
-            element={
-              isAuthenticated ? (
-                <Transactions user={user} onLogout={handleLogout} />
-              ) : (
-                <Navigate to="/login" replace />
-              )
-            }
-          />
-          <Route
-            path="/budgets"
-            element={
-              isAuthenticated ? (
-                <Budgets user={user} onLogout={handleLogout} />
-              ) : (
-                <Navigate to="/login" replace />
-              )
-            }
-          />
-          <Route
-            path="/goals"
-            element={
-              isAuthenticated ? (
-                <Goals user={user} onLogout={handleLogout} />
-              ) : (
-                <Navigate to="/login" replace />
-              )
-            }
-          />
-          <Route
-            path="/insights"
-            element={
-              isAuthenticated ? (
-                <Insights user={user} onLogout={handleLogout} />
-              ) : (
-                <Navigate to="/login" replace />
-              )
-            }
-          />
-          <Route
-            path="/accounts"
-            element={
-              isAuthenticated ? (
-                <Accounts user={user} onLogout={handleLogout} />
-              ) : (
-                <Navigate to="/login" replace />
-              )
-            }
-          />
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        </Routes>
-      </BrowserRouter>
-      <Toaster position="top-right" richColors />
-    </div>
+    <ThemeProvider>
+      <div className="App app-container">
+        <BrowserRouter>
+          <Routes>
+            <Route
+              path="/login"
+              element={
+                isAuthenticated ? (
+                  <Navigate to="/dashboard" replace />
+                ) : (
+                  <AuthPage onLogin={handleLogin} />
+                )
+              }
+            />
+            <Route
+              path="/dashboard"
+              element={
+                isAuthenticated ? (
+                  <Dashboard user={user} onLogout={handleLogout} />
+                ) : (
+                  <Navigate to="/login" replace />
+                )
+              }
+            />
+            <Route
+              path="/transactions"
+              element={
+                isAuthenticated ? (
+                  <Transactions user={user} onLogout={handleLogout} />
+                ) : (
+                  <Navigate to="/login" replace />
+                )
+              }
+            />
+            <Route
+              path="/budgets"
+              element={
+                isAuthenticated ? (
+                  <Budgets user={user} onLogout={handleLogout} />
+                ) : (
+                  <Navigate to="/login" replace />
+                )
+              }
+            />
+            <Route
+              path="/goals"
+              element={
+                isAuthenticated ? (
+                  <Goals user={user} onLogout={handleLogout} />
+                ) : (
+                  <Navigate to="/login" replace />
+                )
+              }
+            />
+            <Route
+              path="/insights"
+              element={
+                isAuthenticated ? (
+                  <Insights user={user} onLogout={handleLogout} />
+                ) : (
+                  <Navigate to="/login" replace />
+                )
+              }
+            />
+            <Route
+              path="/accounts"
+              element={
+                isAuthenticated ? (
+                  <Accounts user={user} onLogout={handleLogout} />
+                ) : (
+                  <Navigate to="/login" replace />
+                )
+              }
+            />
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          </Routes>
+        </BrowserRouter>
+        <Toaster position="top-right" richColors />
+      </div>
+    </ThemeProvider>
   );
 }
 

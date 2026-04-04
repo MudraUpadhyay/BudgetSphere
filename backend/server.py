@@ -115,6 +115,7 @@ class Budget(BaseModel):
     user_id: str
     category: str
     monthly_limit: float
+    spent_this_month: float = 0.0
     currency: str
     created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
@@ -350,6 +351,63 @@ async def delete_budget(budget_id: str, user_id: str = Depends(get_current_user)
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Budget not found")
     return {"message": "Budget deleted"}
+
+@api_router.get("/budgets/check-alerts")
+async def check_budget_alerts(user_id: str = Depends(get_current_user)):
+    """Check if any budgets are exceeded and return alerts"""
+    budgets = await db.budgets.find({"user_id": user_id}, {"_id": 0}).to_list(100)
+    alerts = []
+    
+    for budget in budgets:
+        # Calculate spent this month for this category
+        first_day = datetime.now(timezone.utc).replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        transactions = await db.transactions.find({
+            "user_id": user_id,
+            "category": budget['category'],
+            "type": "expense",
+            "date": {"$gte": first_day.isoformat()}
+        }, {"_id": 0}).to_list(1000)
+        
+        spent = sum(tx['amount'] for tx in transactions)
+        percentage = (spent / budget['monthly_limit']) * 100 if budget['monthly_limit'] > 0 else 0
+        
+        # Update budget spent
+        await db.budgets.update_one(
+            {"id": budget['id']},
+            {"$set": {"spent_this_month": spent}}
+        )
+        
+        if percentage >= 100:
+            alerts.append({
+                "budget_id": budget['id'],
+                "category": budget['category'],
+                "spent": spent,
+                "limit": budget['monthly_limit'],
+                "percentage": round(percentage, 1),
+                "status": "exceeded"
+            })
+        elif percentage >= 80:
+            alerts.append({
+                "budget_id": budget['id'],
+                "category": budget['category'],
+                "spent": spent,
+                "limit": budget['monthly_limit'],
+                "percentage": round(percentage, 1),
+                "status": "warning"
+            })
+    
+    return {"alerts": alerts}
+
+@api_router.put("/budgets/{budget_id}/extend")
+async def extend_budget_limit(budget_id: str, new_limit: float, user_id: str = Depends(get_current_user)):
+    """Extend budget limit"""
+    result = await db.budgets.update_one(
+        {"id": budget_id, "user_id": user_id},
+        {"$set": {"monthly_limit": new_limit}}
+    )
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="Budget not found")
+    return {"message": "Budget limit extended"}
 
 # ============ GOAL ENDPOINTS ============
 
@@ -745,6 +803,42 @@ async def get_currencies():
             {"code": "SEK", "symbol": "kr", "name": "Swedish Krona"}
         ]
     }
+
+@api_router.post("/accounts/{account_id}/family-member")
+async def add_family_member(account_id: str, member_name: str, user_id: str = Depends(get_current_user)):
+    """Add family member to account"""
+    account = await db.accounts.find_one({"id": account_id, "user_id": user_id}, {"_id": 0})
+    if not account:
+        raise HTTPException(status_code=404, detail="Account not found")
+    
+    family_members = account.get('family_members', [])
+    family_members.append({
+        "id": str(uuid.uuid4()),
+        "name": member_name,
+        "added_at": datetime.now(timezone.utc).isoformat()
+    })
+    
+    await db.accounts.update_one(
+        {"id": account_id},
+        {"$set": {"family_members": family_members}}
+    )
+    return {"message": "Family member added", "family_members": family_members}
+
+@api_router.delete("/accounts/{account_id}/family-member/{member_id}")
+async def remove_family_member(account_id: str, member_id: str, user_id: str = Depends(get_current_user)):
+    """Remove family member from account"""
+    account = await db.accounts.find_one({"id": account_id, "user_id": user_id}, {"_id": 0})
+    if not account:
+        raise HTTPException(status_code=404, detail="Account not found")
+    
+    family_members = account.get('family_members', [])
+    family_members = [m for m in family_members if m['id'] != member_id]
+    
+    await db.accounts.update_one(
+        {"id": account_id},
+        {"$set": {"family_members": family_members}}
+    )
+    return {"message": "Family member removed"}
 
 # Include router and middleware
 app.include_router(api_router)

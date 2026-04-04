@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
+import { useTheme } from '@/context/ThemeContext';
 import { 
   LayoutDashboard, 
   CreditCard, 
@@ -9,7 +11,10 @@ import {
   Wallet, 
   LineChart,
   LogOut,
-  User
+  User,
+  Moon,
+  Sun,
+  Globe
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -18,19 +23,29 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 
 const Header = ({ user, onLogout }) => {
   const location = useLocation();
+  const { t, i18n } = useTranslation();
+  const { theme, toggleTheme } = useTheme();
+
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+    localStorage.setItem('language', lng);
+  };
 
   const navItems = [
-    { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-    { path: '/transactions', icon: CreditCard, label: 'Transactions' },
-    { path: '/budgets', icon: LineChart, label: 'Budgets' },
-    { path: '/goals', icon: Target, label: 'Goals' },
-    { path: '/insights', icon: TrendingUp, label: 'Insights' },
-    { path: '/accounts', icon: Wallet, label: 'Accounts' },
+    { path: '/dashboard', icon: LayoutDashboard, label: t('dashboard') },
+    { path: '/transactions', icon: CreditCard, label: t('transactions') },
+    { path: '/budgets', icon: LineChart, label: t('budgets') },
+    { path: '/goals', icon: Target, label: t('goals') },
+    { path: '/insights', icon: TrendingUp, label: t('insights') },
+    { path: '/accounts', icon: Wallet, label: t('accounts') },
   ];
 
   return (
@@ -44,11 +59,11 @@ const Header = ({ user, onLogout }) => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/dashboard" className="flex items-center space-x-2" data-testid="logo-link">
-            <div className="w-10 h-10 bg-[#4A6B53] rounded-xl flex items-center justify-center">
+            <div className="w-10 h-10 bg-[#4A6B53] dark:bg-[#5a7b63] rounded-xl flex items-center justify-center">
               <Wallet className="w-6 h-6 text-white" />
             </div>
-            <span className="text-xl font-['Outfit'] font-semibold text-[#2C2825] hidden sm:block">
-              SmartBudget
+            <span className="text-xl font-['Outfit'] font-semibold text-[#2C2825] dark:text-white hidden sm:block">
+              {t('appName')}
             </span>
           </Link>
 
@@ -100,15 +115,32 @@ const Header = ({ user, onLogout }) => {
               <DropdownMenuSeparator />
               <DropdownMenuItem className="cursor-pointer" data-testid="profile-menu-item">
                 <User className="mr-2 h-4 w-4" />
-                <span className="font-['Manrope']">Profile</span>
+                <span className="font-['Manrope']">{t('profile')}</span>
               </DropdownMenuItem>
+              <DropdownMenuItem onClick={toggleTheme} className="cursor-pointer">
+                {theme === 'light' ? <Moon className="mr-2 h-4 w-4" /> : <Sun className="mr-2 h-4 w-4" />}
+                <span className="font-['Manrope']">{theme === 'light' ? t('darkMode') : t('lightMode')}</span>
+              </DropdownMenuItem>
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger className="cursor-pointer">
+                  <Globe className="mr-2 h-4 w-4" />
+                  <span className="font-['Manrope']">{t('language')}</span>
+                </DropdownMenuSubTrigger>
+                <DropdownMenuSubContent>
+                  <DropdownMenuItem onClick={() => changeLanguage('en')}>English</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => changeLanguage('es')}>Español</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => changeLanguage('fr')}>Français</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => changeLanguage('hi')}>हिन्दी</DropdownMenuItem>
+                </DropdownMenuSubContent>
+              </DropdownMenuSub>
+              <DropdownMenuSeparator />
               <DropdownMenuItem
                 onClick={onLogout}
                 className="cursor-pointer text-[#CC6C5B]"
                 data-testid="logout-button"
               >
                 <LogOut className="mr-2 h-4 w-4" />
-                <span className="font-['Manrope']">Logout</span>
+                <span className="font-['Manrope']">{t('logout')}</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

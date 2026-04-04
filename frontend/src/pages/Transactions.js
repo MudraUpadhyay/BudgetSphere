@@ -20,7 +20,6 @@ const Transactions = ({ user, onLogout }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
-    account_id: '',
     amount: '',
     category: 'Other',
     description: '',
@@ -52,16 +51,27 @@ const Transactions = ({ user, onLogout }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Auto-select first account
+    const firstAccount = accounts.length > 0 ? accounts[0].id : null;
+    if (!firstAccount) {
+      toast.error('Please create an account first');
+      return;
+    }
+    
     try {
       await apiClient.post('/transactions', {
-        ...formData,
+        account_id: firstAccount,
         amount: parseFloat(formData.amount),
+        category: formData.category,
+        description: formData.description,
+        date: formData.date,
+        type: formData.type,
         currency: user.currency_preference
       });
       toast.success('Transaction added!');
       setOpen(false);
       setFormData({
-        account_id: '',
         amount: '',
         category: 'Other',
         description: '',
@@ -128,21 +138,7 @@ const Transactions = ({ user, onLogout }) => {
                 </DialogDescription>
               </DialogHeader>
               <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="space-y-2">
-                  <Label className="font-['Manrope']">Account</Label>
-                  <Select value={formData.account_id} onValueChange={(value) => setFormData({...formData, account_id: value})} required>
-                    <SelectTrigger data-testid="account-select">
-                      <SelectValue placeholder="Select account" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {accounts.map(acc => (
-                        <SelectItem key={acc.id} value={acc.id}>{acc.name}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
+                <div className="grid grid-cols-2 gap-4">\n                  <div className="space-y-2">
                     <Label className="font-['Manrope']">Type</Label>
                     <Select value={formData.type} onValueChange={(value) => setFormData({...formData, type: value})}>
                       <SelectTrigger data-testid="type-select">

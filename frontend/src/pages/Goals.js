@@ -17,6 +17,9 @@ const Goals = ({ user, onLogout }) => {
   const [goals, setGoals] = useState([]);
   const [predictions, setPredictions] = useState({});
   const [open, setOpen] = useState(false);
+  const [addMoneyOpen, setAddMoneyOpen] = useState(false);
+  const [selectedGoal, setSelectedGoal] = useState(null);
+  const [moneyToAdd, setMoneyToAdd] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     target_amount: '',
@@ -91,6 +94,25 @@ const Goals = ({ user, onLogout }) => {
     } catch (error) {
       toast.error('Failed to update progress');
     }
+  };
+
+  const openAddMoneyDialog = (goal) => {
+    setSelectedGoal(goal);
+    setMoneyToAdd('');
+    setAddMoneyOpen(true);
+  };
+
+  const handleAddMoney = async () => {
+    if (!moneyToAdd || parseFloat(moneyToAdd) <= 0) {
+      toast.error('Please enter a valid amount');
+      return;
+    }
+
+    const newAmount = selectedGoal.current_amount + parseFloat(moneyToAdd);
+    await handleUpdateProgress(selectedGoal.id, newAmount);
+    setAddMoneyOpen(false);
+    setMoneyToAdd('');
+    setSelectedGoal(null);
   };
 
   const currencySymbol = getCurrencySymbol(user.currency_preference);
@@ -225,15 +247,27 @@ const Goals = ({ user, onLogout }) => {
                             {goal.name}
                           </CardTitle>
                         </div>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleDelete(goal.id)}
-                          className="text-[#CC6C5B] hover:text-[#b55a49] hover:bg-[#CC6C5B]/10"
-                          data-testid={`delete-goal-${index}`}
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
+                        <div className="flex items-center space-x-2">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => openAddMoneyDialog(goal)}
+                            className="text-[#4A6B53] hover:text-[#3d5843] hover:bg-[#4A6B53]/10"
+                            data-testid={`add-money-${index}`}
+                          >
+                            <Plus className="w-4 h-4 mr-1" />
+                            Add Money
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleDelete(goal.id)}
+                            className="text-[#CC6C5B] hover:text-[#b55a49] hover:bg-[#CC6C5B]/10"
+                            data-testid={`delete-goal-${index}`}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
                       </div>
                     </CardHeader>
                     <CardContent className="space-y-4">
@@ -285,6 +319,39 @@ const Goals = ({ user, onLogout }) => {
           </div>
         )}
       </main>
+
+      {/* Add Money Dialog */}
+      <Dialog open={addMoneyOpen} onOpenChange={setAddMoneyOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="font-['Outfit']">Add Money to Goal</DialogTitle>
+            <DialogDescription className="font-['Manrope']">
+              {selectedGoal && `${selectedGoal.name}: ${currencySymbol}${selectedGoal.current_amount.toFixed(2)} / ${currencySymbol}${selectedGoal.target_amount.toFixed(2)}`}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label className="font-['Manrope']">Amount to Add ({currencySymbol})</Label>
+              <Input
+                type="number"
+                step="0.01"
+                value={moneyToAdd}
+                onChange={(e) => setMoneyToAdd(e.target.value)}
+                className="font-['Manrope']"
+                placeholder="Enter amount"
+                data-testid="add-money-input"
+              />
+            </div>
+            <Button 
+              onClick={handleAddMoney} 
+              className="w-full bg-[#4A6B53] hover:bg-[#3d5843] text-white rounded-full font-['Manrope']"
+              data-testid="submit-add-money"
+            >
+              Add Money
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

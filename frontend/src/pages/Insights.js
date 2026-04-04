@@ -3,10 +3,10 @@ import { motion } from 'framer-motion';
 import Header from '@/components/layout/Header';
 import { apiClient } from '@/App';
 import { toast } from 'sonner';
-import { TrendingUp, Sparkles, Brain } from 'lucide-react';
+import { TrendingUp, Sparkles, Brain, PieChart as PieChartIcon } from 'lucide-react';
 import { getCurrencySymbol } from '@/utils/currencyData';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell, LineChart, Line, Legend } from 'recharts';
 
 const Insights = ({ user, onLogout }) => {
   const [loading, setLoading] = useState(true);
@@ -66,6 +66,16 @@ const Insights = ({ user, onLogout }) => {
         predicted: value
       }))
     : [];
+
+  // Pie chart colors
+  const COLORS = ['#4A6B53', '#D4A373', '#CC6C5B', '#A1B5D8', '#8B9D83', '#C89F7F'];
+
+  // Combined data for comparison chart
+  const comparisonData = categoryData.map((cat, idx) => ({
+    name: cat.name,
+    current: cat.amount,
+    predicted: predictionData.find(p => p.name === cat.name)?.predicted || 0
+  }));
 
   return (
     <div className="min-h-screen bg-[#F7F6F2]">
@@ -263,6 +273,106 @@ const Insights = ({ user, onLogout }) => {
                 ) : (
                   <p className="text-[#6E6A64] font-['Manrope'] text-center py-8">
                     Not enough data for predictions
+                  </p>
+                )}
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* Pie Chart - Category Distribution */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.5 }}
+            className="lg:col-span-1"
+          >
+            <Card className="surface-card border-[#E6E3D8] h-full">
+              <CardHeader>
+                <CardTitle className="text-lg font-['Outfit'] text-[#2C2825] flex items-center space-x-2">
+                  <PieChartIcon className="w-5 h-5 text-[#A1B5D8]" />
+                  <span>Expense Distribution</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {categoryData.length > 0 ? (
+                  <ResponsiveContainer width="100%" height={250}>
+                    <PieChart>
+                      <Pie
+                        data={categoryData}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                        outerRadius={80}
+                        fill="#8884d8"
+                        dataKey="amount"
+                      >
+                        {categoryData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: '#FFFFFF',
+                          border: '1px solid #E6E3D8',
+                          borderRadius: '12px',
+                          fontFamily: 'Manrope'
+                        }}
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <p className="text-center text-[#6E6A64] font-['Manrope'] py-12">
+                    No data available
+                  </p>
+                )}
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* Comparison Chart - Current vs Predicted */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.6 }}
+            className="lg:col-span-2"
+          >
+            <Card className="surface-card border-[#E6E3D8]">
+              <CardHeader>
+                <CardTitle className="text-lg font-['Outfit'] text-[#2C2825]">
+                  Current vs Predicted Spending
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {comparisonData.length > 0 ? (
+                  <ResponsiveContainer width="100%" height={300}>
+                    <LineChart data={comparisonData}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#E6E3D8" />
+                      <XAxis
+                        dataKey="name"
+                        stroke="#6E6A64"
+                        style={{ fontFamily: 'Manrope', fontSize: 12 }}
+                      />
+                      <YAxis
+                        stroke="#6E6A64"
+                        style={{ fontFamily: 'Manrope', fontSize: 12 }}
+                      />
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: '#FFFFFF',
+                          border: '1px solid #E6E3D8',
+                          borderRadius: '12px',
+                          fontFamily: 'Manrope'
+                        }}
+                      />
+                      <Legend />
+                      <Line type="monotone" dataKey="current" stroke="#4A6B53" strokeWidth={2} name="Current" />
+                      <Line type="monotone" dataKey="predicted" stroke="#D4A373" strokeWidth={2} strokeDasharray="5 5" name="Predicted" />
+                    </LineChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <p className="text-center text-[#6E6A64] font-['Manrope'] py-12">
+                    No comparison data available
                   </p>
                 )}
               </CardContent>

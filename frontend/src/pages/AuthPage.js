@@ -55,7 +55,7 @@ const AuthPage = ({ onLogin }) => {
             <Wallet className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-4xl font-['Outfit'] font-semibold text-[#2C2825] mb-2">
-            SmartBudget AI
+            Budget Sphere
           </h1>
           <p className="text-[#6E6A64] font-['Manrope']">
             Your intelligent financial companion

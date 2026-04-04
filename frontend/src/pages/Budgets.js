@@ -17,7 +17,11 @@ const Budgets = ({ user, onLogout }) => {
   const [loading, setLoading] = useState(true);
   const [budgets, setBudgets] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
+  const [alerts, setAlerts] = useState([]);
   const [open, setOpen] = useState(false);
+  const [extendOpen, setExtendOpen] = useState(false);
+  const [selectedBudget, setSelectedBudget] = useState(null);
+  const [newLimit, setNewLimit] = useState('');
   const [formData, setFormData] = useState({
     category: 'Other',
     monthly_limit: ''
@@ -30,12 +34,14 @@ const Budgets = ({ user, onLogout }) => {
   const loadData = async () => {
     try {
       setLoading(true);
-      const [budgetsRes, suggestionsRes] = await Promise.all([
+      const [budgetsRes, suggestionsRes, alertsRes] = await Promise.all([
         apiClient.get('/budgets'),
-        apiClient.post('/ai/suggest-budget')
+        apiClient.post('/ai/suggest-budget'),
+        apiClient.get('/budgets/check-alerts')
       ]);
       setBudgets(budgetsRes.data);
       setSuggestions(suggestionsRes.data.suggestions || []);
+      setAlerts(alertsRes.data.alerts || []);
     } catch (error) {
       toast.error('Failed to load budgets');
     } finally {
@@ -77,6 +83,32 @@ const Budgets = ({ user, onLogout }) => {
       monthly_limit: suggestion.suggested_budget.toString()
     });
     setOpen(true);
+  };
+
+  const handleExtendLimit = async () => {
+    if (!newLimit || parseFloat(newLimit) <= 0) {
+      toast.error('Please enter a valid limit');
+      return;
+    }
+    
+    try {
+      await apiClient.put(`/budgets/${selectedBudget.id}/extend`, null, {
+        params: { new_limit: parseFloat(newLimit) }
+      });
+      toast.success('Budget limit extended!');
+      setExtendOpen(false);
+      setNewLimit('');
+      setSelectedBudget(null);
+      loadData();
+    } catch (error) {
+      toast.error('Failed to extend limit');
+    }
+  };
+
+  const openExtendDialog = (budget) => {
+    setSelectedBudget(budget);
+    setNewLimit(budget.monthly_limit.toString());
+    setExtendOpen(true);
   };
 
   const currencySymbol = getCurrencySymbol(user.currency_preference);
@@ -193,6 +225,58 @@ const Budgets = ({ user, onLogout }) => {
           </motion.div>
         )}
 
+        {/* Budget Alerts */}
+        {alerts.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-8"
+          >
+            <Card className="surface-card border-[#E6E3D8]">
+              <CardHeader>
+                <CardTitle className="text-lg font-['Outfit'] text-[#2C2825]">
+                  Budget Alerts
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {alerts.map((alert, index) => (
+                    <div
+                      key={index}
+                      className={`p-4 rounded-lg border-l-4 ${
+                        alert.status === 'exceeded'
+                          ? 'bg-[#CC6C5B]/10 border-[#CC6C5B]'
+                          : 'bg-[#D4A373]/10 border-[#D4A373]'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="font-['Manrope'] font-medium text-[#2C2825] mb-1">
+                            {alert.category} Budget {alert.status === 'exceeded' ? 'Exceeded' : 'Warning'}
+                          </p>
+                          <p className="text-sm text-[#6E6A64] font-['Manrope']">
+                            Spent: {currencySymbol}{alert.spent.toFixed(2)} / {currencySymbol}{alert.limit.toFixed(2)} ({alert.percentage}%)
+                          </p>
+                        </div>
+                        <Button
+                          size="sm"
+                          onClick={() => {
+                            const budget = budgets.find(b => b.id === alert.budget_id);
+                            if (budget) openExtendDialog(budget);
+                          }}
+                          className="bg-[#4A6B53] hover:bg-[#3d5843] text-white rounded-full font-['Manrope']"
+                        >
+                          Extend Limit
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        )}
+
         {/* Budgets List */}
         {budgets.length === 0 ? (
           <Card className="surface-card border-[#E6E3D8]">
@@ -246,6 +330,37 @@ const Budgets = ({ user, onLogout }) => {
           </div>
         )}
       </main>
+
+      {/* Extend Limit Dialog */}
+      <Dialog open={extendOpen} onOpenChange={setExtendOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="font-['Outfit']">Extend Budget Limit</DialogTitle>
+            <DialogDescription className="font-['Manrope']">
+              {selectedBudget && `Current limit for ${selectedBudget.category}: ${currencySymbol}${selectedBudget.monthly_limit.toFixed(2)}`}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label className="font-['Manrope']">New Monthly Limit ({currencySymbol})</Label>
+              <Input
+                type="number"
+                step="0.01"
+                value={newLimit}
+                onChange={(e) => setNewLimit(e.target.value)}
+                className="font-['Manrope']"
+                placeholder="Enter new limit"
+              />
+            </div>
+            <Button 
+              onClick={handleExtendLimit} 
+              className="w-full bg-[#4A6B53] hover:bg-[#3d5843] text-white rounded-full font-['Manrope']"
+            >
+              Extend Limit
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

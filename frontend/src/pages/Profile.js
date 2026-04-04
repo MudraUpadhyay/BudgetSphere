@@ -22,7 +22,7 @@ const Profile = ({ user, onLogout }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-teal-50 to-cyan-50">
       <Header user={user} onLogout={onLogout} />
       
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -31,7 +31,7 @@ const Profile = ({ user, onLogout }) => {
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <h1 className="text-4xl sm:text-5xl font-['Outfit'] font-bold bg-gradient-to-r from-[#667eea] to-[#764ba2] bg-clip-text text-transparent mb-2">
+          <h1 className="text-4xl sm:text-5xl font-['Outfit'] font-bold text-teal-600 mb-2">
             My Profile
           </h1>
           <p className="text-gray-600 font-['Manrope']">Manage your account settings and preferences</p>
@@ -47,7 +47,7 @@ const Profile = ({ user, onLogout }) => {
           >
             <Card className="surface-card border-0 shadow-xl">
               <CardContent className="pt-8 text-center">
-                <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-gradient-to-br from-[#667eea] to-[#764ba2] flex items-center justify-center text-white text-3xl font-['Outfit'] font-bold shadow-lg">
+                <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-teal-500 flex items-center justify-center text-white text-3xl font-['Outfit'] font-bold shadow-lg">
                   {user?.name?.charAt(0).toUpperCase()}
                 </div>
                 <h2 className="text-2xl font-['Outfit'] font-bold text-gray-800 mb-1">{user?.name}</h2>
@@ -55,7 +55,7 @@ const Profile = ({ user, onLogout }) => {
                 
                 <Dialog open={editOpen} onOpenChange={setEditOpen}>
                   <DialogTrigger asChild>
-                    <Button className="mt-6 w-full bg-gradient-to-r from-[#667eea] to-[#764ba2] hover:shadow-lg text-white rounded-full font-['Manrope']">
+                    <Button className="mt-6 w-full bg-teal-500 hover:bg-teal-600 hover:shadow-lg text-white rounded-full font-['Manrope']">
                       <Edit className="w-4 h-4 mr-2" />
                       Edit Profile
                     </Button>
@@ -85,7 +85,7 @@ const Profile = ({ user, onLogout }) => {
                           className="font-['Manrope']"
                         />
                       </div>
-                      <Button type="submit" className="w-full bg-gradient-to-r from-[#667eea] to-[#764ba2] text-white rounded-full font-['Manrope']">
+                      <Button type="submit" className="w-full bg-teal-500 hover:bg-teal-600 text-white rounded-full font-['Manrope']">
                         Save Changes
                       </Button>
                     </form>
@@ -109,8 +109,8 @@ const Profile = ({ user, onLogout }) => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div className="flex items-start space-x-4 p-4 rounded-xl bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-100">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-cyan-400 flex items-center justify-center flex-shrink-0">
+                <div className="flex items-start space-x-4 p-4 rounded-xl bg-teal-50 border border-teal-100">
+                  <div className="w-12 h-12 rounded-full bg-teal-500 flex items-center justify-center flex-shrink-0">
                     <User className="w-6 h-6 text-white" />
                   </div>
                   <div className="flex-1">
@@ -119,8 +119,8 @@ const Profile = ({ user, onLogout }) => {
                   </div>
                 </div>
 
-                <div className="flex items-start space-x-4 p-4 rounded-xl bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-100">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center flex-shrink-0">
+                <div className="flex items-start space-x-4 p-4 rounded-xl bg-blue-50 border border-blue-100">
+                  <div className="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0">
                     <Mail className="w-6 h-6 text-white" />
                   </div>
                   <div className="flex-1">
@@ -129,8 +129,8 @@ const Profile = ({ user, onLogout }) => {
                   </div>
                 </div>
 
-                <div className="flex items-start space-x-4 p-4 rounded-xl bg-gradient-to-r from-green-50 to-teal-50 border border-green-100">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-teal-400 flex items-center justify-center flex-shrink-0">
+                <div className="flex items-start space-x-4 p-4 rounded-xl bg-green-50 border border-green-100">
+                  <div className="w-12 h-12 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0">
                     <Wallet className="w-6 h-6 text-white" />
                   </div>
                   <div className="flex-1">
@@ -139,8 +139,8 @@ const Profile = ({ user, onLogout }) => {
                   </div>
                 </div>
 
-                <div className="flex items-start space-x-4 p-4 rounded-xl bg-gradient-to-r from-orange-50 to-yellow-50 border border-orange-100">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-orange-400 to-yellow-400 flex items-center justify-center flex-shrink-0">
+                <div className="flex items-start space-x-4 p-4 rounded-xl bg-orange-50 border border-orange-100">
+                  <div className="w-12 h-12 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0">
                     <Calendar className="w-6 h-6 text-white" />
                   </div>
                   <div className="flex-1">

@@ -17,9 +17,6 @@ const Accounts = ({ user, onLogout }) => {
   const [accounts, setAccounts] = useState([]);
   const [summary, setSummary] = useState(null);
   const [open, setOpen] = useState(false);
-  const [familyOpen, setFamilyOpen] = useState(false);
-  const [selectedAccount, setSelectedAccount] = useState(null);
-  const [familyMemberName, setFamilyMemberName] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     type: 'checking',
@@ -93,41 +90,6 @@ const Accounts = ({ user, onLogout }) => {
         return Banknote;
       default:
         return Wallet;
-    }
-  };
-
-  const openFamilyDialog = (account) => {
-    setSelectedAccount(account);
-    setFamilyMemberName('');
-    setFamilyOpen(true);
-  };
-
-  const handleAddFamilyMember = async () => {
-    if (!familyMemberName.trim()) {
-      toast.error('Please enter a name');
-      return;
-    }
-
-    try {
-      await apiClient.post(`/accounts/${selectedAccount.id}/family-member`, null, {
-        params: { member_name: familyMemberName }
-      });
-      toast.success('Family member added!');
-      setFamilyOpen(false);
-      setFamilyMemberName('');
-      loadData();
-    } catch (error) {
-      toast.error('Failed to add family member');
-    }
-  };
-
-  const handleRemoveFamilyMember = async (accountId, memberId) => {
-    try {
-      await apiClient.delete(`/accounts/${accountId}/family-member/${memberId}`);
-      toast.success('Family member removed');
-      loadData();
-    } catch (error) {
-      toast.error('Failed to remove family member');
     }
   };
 
@@ -318,50 +280,15 @@ const Accounts = ({ user, onLogout }) => {
                       </div>
                     </CardHeader>
                     <CardContent>
-                      <p className="text-3xl font-['Outfit'] font-semibold text-[#2C2825] mb-2">
+                      <p className="text-3xl font-['Outfit'] font-semibold text-gray-800 mb-2">
                         {accountCurrencySymbol}{account.balance.toFixed(2)}
                       </p>
                       {account.bank_name && (
-                        <p className="text-sm text-[#6E6A64] font-['Manrope']">{account.bank_name}</p>
+                        <p className="text-sm text-gray-600 font-['Manrope']">{account.bank_name}</p>
                       )}
-                      <p className="text-xs text-[#6E6A64] font-['Manrope'] mt-2">
+                      <p className="text-xs text-gray-500 font-['Manrope'] mt-2">
                         Currency: {account.currency}
                       </p>
-
-                      {/* Family Members Section */}
-                      <div className="mt-4 pt-4 border-t border-[#E6E3D8]">
-                        <div className="flex items-center justify-between mb-2">
-                          <p className="text-sm font-['Manrope'] font-medium text-[#2C2825]">
-                            Family Members
-                          </p>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => openFamilyDialog(account)}
-                            className="text-[#4A6B53] hover:text-[#3d5843] h-6 px-2"
-                          >
-                            <Plus className="w-3 h-3 mr-1" />
-                            Add
-                          </Button>
-                        </div>
-                        {account.family_members && account.family_members.length > 0 ? (
-                          <div className="space-y-1">
-                            {account.family_members.map((member) => (
-                              <div key={member.id} className="flex items-center justify-between text-xs bg-[#F0EEE7] px-2 py-1 rounded">
-                                <span className="font-['Manrope'] text-[#2C2825]">{member.name}</span>
-                                <button
-                                  onClick={() => handleRemoveFamilyMember(account.id, member.id)}
-                                  className="text-[#CC6C5B] hover:text-[#b55a49]"
-                                >
-                                  <Trash2 className="w-3 h-3" />
-                                </button>
-                              </div>
-                            ))}
-                          </div>
-                        ) : (
-                          <p className="text-xs text-[#6E6A64] font-['Manrope']">No family members added</p>
-                        )}
-                      </div>
                     </CardContent>
                   </Card>
                 </motion.div>
@@ -370,37 +297,6 @@ const Accounts = ({ user, onLogout }) => {
           </div>
         )}
       </main>
-
-      {/* Add Family Member Dialog */}
-      <Dialog open={familyOpen} onOpenChange={setFamilyOpen}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle className="font-['Outfit']">Add Family Member</DialogTitle>
-            <DialogDescription className="font-['Manrope']">
-              {selectedAccount && `Add a family member to ${selectedAccount.name}`}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label className="font-['Manrope']">Family Member Name</Label>
-              <Input
-                value={familyMemberName}
-                onChange={(e) => setFamilyMemberName(e.target.value)}
-                className="font-['Manrope']"
-                placeholder="e.g., Spouse, Child, Parent"
-                data-testid="family-member-name-input"
-              />
-            </div>
-            <Button 
-              onClick={handleAddFamilyMember} 
-              className="w-full bg-[#4A6B53] hover:bg-[#3d5843] text-white rounded-full font-['Manrope']"
-              data-testid="submit-family-member"
-            >
-              Add Family Member
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };

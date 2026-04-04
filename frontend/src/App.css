@@ -1,7 +1,7 @@
 /* Global app styles */
 .app-container {
     min-height: 100vh;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #f0f9ff;
 }
 
 /* Smooth transitions */
@@ -16,7 +16,7 @@
 
 .card-hover:hover {
     transform: translateY(-4px);
-    box-shadow: 0 12px 40px rgba(102, 126, 234, 0.25);
+    box-shadow: 0 12px 40px rgba(20, 184, 166, 0.2);
 }
 
 /* Glassmorphism header */
@@ -24,13 +24,13 @@
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
     background: rgba(255, 255, 255, 0.95);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.5);
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+    border-bottom: 1px solid rgba(20, 184, 166, 0.1);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
 }
 
 /* Button styles */
 .btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #14B8A6;
     color: white;
     border: none;
     border-radius: 9999px;
@@ -41,33 +41,13 @@
 }
 
 .btn-primary:hover {
+    background: #0D9488;
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 8px 24px rgba(20, 184, 166, 0.3);
 }
 
 .btn-primary:active {
     transform: scale(0.98);
-}
-
-/* Gradient backgrounds */
-.gradient-purple {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-.gradient-blue {
-    background: linear-gradient(135deg, #2196F3 0%, #00BCD4 100%);
-}
-
-.gradient-pink {
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-}
-
-.gradient-green {
-    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-}
-
-.gradient-orange {
-    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
 }
 
 /* Animations */
@@ -99,21 +79,6 @@
     animation: pulse 2s ease-in-out infinite;
 }
 
-@keyframes shimmer {
-    0% {
-        background-position: -1000px 0;
-    }
-    100% {
-        background-position: 1000px 0;
-    }
-}
-
-.shimmer {
-    animation: shimmer 2s infinite;
-    background: linear-gradient(to right, #f0f2f5 8%, #e4e6eb 18%, #f0f2f5 33%);
-    background-size: 1000px 100%;
-}
-
 /* Bento Grid */
 .bento-grid {
     display: grid;
@@ -135,11 +100,10 @@
 
 /* Card surface */
 .surface-card {
-    background: rgba(255, 255, 255, 0.95);
-    border: 1px solid rgba(255, 255, 255, 0.5);
+    background: white;
+    border: 1px solid rgba(20, 184, 166, 0.1);
     border-radius: 1.5rem;
-    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
-    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
     padding: 1.5rem;
 }
 

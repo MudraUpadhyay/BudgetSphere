@@ -49,7 +49,7 @@ const Header = ({ user, onLogout }) => {
               alt="Budget Sphere" 
               className="w-10 h-10 rounded-xl"
             />
-            <span className="text-xl font-['Outfit'] font-bold bg-gradient-to-r from-[#667eea] to-[#764ba2] bg-clip-text text-transparent hidden sm:block">
+            <span className="text-xl font-['Outfit'] font-bold text-teal-600 hidden sm:block">
               Budget Sphere
             </span>
           </Link>
@@ -66,8 +66,8 @@ const Header = ({ user, onLogout }) => {
                   data-testid={`nav-${item.label.toLowerCase()}`}
                   className={`flex items-center space-x-2 px-4 py-2 rounded-full transition-all duration-300 ${
                     isActive
-                      ? 'bg-gradient-to-r from-[#667eea] to-[#764ba2] text-white shadow-lg'
-                      : 'text-gray-700 hover:bg-gray-100'
+                      ? 'bg-teal-500 text-white shadow-lg'
+                      : 'text-gray-700 hover:bg-teal-50'
                   }`}
                 >
                   <Icon className="w-4 h-4" />
@@ -131,7 +131,7 @@ const Header = ({ user, onLogout }) => {
               to={item.path}
               data-testid={`mobile-nav-${item.label.toLowerCase()}`}
               className={`flex flex-col items-center space-y-1 p-2 rounded-lg transition-all duration-300 ${
-                isActive ? 'text-[#667eea]' : 'text-gray-600'
+                isActive ? 'text-teal-600' : 'text-gray-600'
               }`}
             >
               <Icon className="w-5 h-5" />

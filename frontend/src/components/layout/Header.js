@@ -1,8 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { useTranslation } from 'react-i18next';
-import { useTheme } from '@/context/ThemeContext';
 import { 
   LayoutDashboard, 
   CreditCard, 
@@ -11,10 +9,7 @@ import {
   Wallet, 
   LineChart,
   LogOut,
-  User,
-  Moon,
-  Sun,
-  Globe
+  User
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -23,29 +18,19 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
   DropdownMenuSeparator,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 
 const Header = ({ user, onLogout }) => {
   const location = useLocation();
-  const { t, i18n } = useTranslation();
-  const { theme, toggleTheme } = useTheme();
-
-  const changeLanguage = (lng) => {
-    i18n.changeLanguage(lng);
-    localStorage.setItem('language', lng);
-  };
 
   const navItems = [
-    { path: '/dashboard', icon: LayoutDashboard, label: t('dashboard') },
-    { path: '/transactions', icon: CreditCard, label: t('transactions') },
-    { path: '/budgets', icon: LineChart, label: t('budgets') },
-    { path: '/goals', icon: Target, label: t('goals') },
-    { path: '/insights', icon: TrendingUp, label: t('insights') },
-    { path: '/accounts', icon: Wallet, label: t('accounts') },
+    { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+    { path: '/transactions', icon: CreditCard, label: 'Transactions' },
+    { path: '/budgets', icon: LineChart, label: 'Budgets' },
+    { path: '/goals', icon: Target, label: 'Goals' },
+    { path: '/insights', icon: TrendingUp, label: 'Insights' },
+    { path: '/accounts', icon: Wallet, label: 'Accounts' },
   ];
 
   return (
@@ -58,12 +43,14 @@ const Header = ({ user, onLogout }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/dashboard" className="flex items-center space-x-2" data-testid="logo-link">
-            <div className="w-10 h-10 bg-[#4A6B53] dark:bg-[#5a7b63] rounded-xl flex items-center justify-center">
-              <Wallet className="w-6 h-6 text-white" />
-            </div>
-            <span className="text-xl font-['Outfit'] font-semibold text-[#2C2825] dark:text-white hidden sm:block">
-              {t('appName')}
+          <Link to="/dashboard" className="flex items-center space-x-3" data-testid="logo-link">
+            <img 
+              src="https://static.prod-images.emergentagent.com/jobs/6798122a-09d3-486d-a432-6c502b68eaf2/images/41e02ae0b59a0b2d643d18effc815474a698dc6b7872a079d106ad1e447d854f.png" 
+              alt="Budget Sphere" 
+              className="w-10 h-10 rounded-xl"
+            />
+            <span className="text-xl font-['Outfit'] font-bold bg-gradient-to-r from-[#667eea] to-[#764ba2] bg-clip-text text-transparent hidden sm:block">
+              Budget Sphere
             </span>
           </Link>
 
@@ -79,8 +66,8 @@ const Header = ({ user, onLogout }) => {
                   data-testid={`nav-${item.label.toLowerCase()}`}
                   className={`flex items-center space-x-2 px-4 py-2 rounded-full transition-all duration-300 ${
                     isActive
-                      ? 'bg-[#4A6B53] text-white'
-                      : 'text-[#6E6A64] hover:bg-[#F0EEE7] hover:text-[#2C2825]'
+                      ? 'bg-gradient-to-r from-[#667eea] to-[#764ba2] text-white shadow-lg'
+                      : 'text-gray-700 hover:bg-gray-100'
                   }`}
                 >
                   <Icon className="w-4 h-4" />
@@ -113,34 +100,20 @@ const Header = ({ user, onLogout }) => {
                 </div>
               </div>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="cursor-pointer" data-testid="profile-menu-item">
-                <User className="mr-2 h-4 w-4" />
-                <span className="font-['Manrope']">{t('profile')}</span>
+              <DropdownMenuItem asChild className="cursor-pointer" data-testid="profile-menu-item">
+                <Link to="/profile" className="flex items-center">
+                  <User className="mr-2 h-4 w-4" />
+                  <span className="font-['Manrope']">Profile</span>
+                </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={toggleTheme} className="cursor-pointer">
-                {theme === 'light' ? <Moon className="mr-2 h-4 w-4" /> : <Sun className="mr-2 h-4 w-4" />}
-                <span className="font-['Manrope']">{theme === 'light' ? t('darkMode') : t('lightMode')}</span>
-              </DropdownMenuItem>
-              <DropdownMenuSub>
-                <DropdownMenuSubTrigger className="cursor-pointer">
-                  <Globe className="mr-2 h-4 w-4" />
-                  <span className="font-['Manrope']">{t('language')}</span>
-                </DropdownMenuSubTrigger>
-                <DropdownMenuSubContent>
-                  <DropdownMenuItem onClick={() => changeLanguage('en')}>English</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => changeLanguage('es')}>Español</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => changeLanguage('fr')}>Français</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => changeLanguage('hi')}>हिन्दी</DropdownMenuItem>
-                </DropdownMenuSubContent>
-              </DropdownMenuSub>
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 onClick={onLogout}
-                className="cursor-pointer text-[#CC6C5B]"
+                className="cursor-pointer text-red-500 hover:text-red-600"
                 data-testid="logout-button"
               >
                 <LogOut className="mr-2 h-4 w-4" />
-                <span className="font-['Manrope']">{t('logout')}</span>
+                <span className="font-['Manrope']">Logout</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -158,7 +131,7 @@ const Header = ({ user, onLogout }) => {
               to={item.path}
               data-testid={`mobile-nav-${item.label.toLowerCase()}`}
               className={`flex flex-col items-center space-y-1 p-2 rounded-lg transition-all duration-300 ${
-                isActive ? 'text-[#4A6B53]' : 'text-[#6E6A64]'
+                isActive ? 'text-[#667eea]' : 'text-gray-600'
               }`}
             >
               <Icon className="w-5 h-5" />

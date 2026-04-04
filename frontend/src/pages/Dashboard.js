@@ -30,7 +30,6 @@ const Dashboard = ({ user, onLogout }) => {
   const [healthScore, setHealthScore] = useState(null);
   const [recentTransactions, setRecentTransactions] = useState([]);
   const [goals, setGoals] = useState([]);
-  const [alerts, setAlerts] = useState([]);
   
   // NLP Input
   const [nlpInput, setNlpInput] = useState('');
@@ -56,15 +55,13 @@ const Dashboard = ({ user, onLogout }) => {
         profileRes,
         healthRes,
         transactionsRes,
-        goalsRes,
-        alertsRes
+        goalsRes
       ] = await Promise.all([
         apiClient.get('/accounts/summary'),
         apiClient.get('/ai/financial-profile'),
         apiClient.get('/ai/health-score'),
         apiClient.get('/transactions?limit=5'),
-        apiClient.get('/goals'),
-        apiClient.get('/alerts')
+        apiClient.get('/goals')
       ]);
 
       setSummary(summaryRes.data);
@@ -72,7 +69,6 @@ const Dashboard = ({ user, onLogout }) => {
       setHealthScore(healthRes.data);
       setRecentTransactions(transactionsRes.data);
       setGoals(goalsRes.data);
-      setAlerts(alertsRes.data.filter(a => !a.read).slice(0, 3));
     } catch (error) {
       toast.error('Failed to load dashboard data');
     } finally {
@@ -378,39 +374,6 @@ const Dashboard = ({ user, onLogout }) => {
                   >
                     <p className="text-sm font-['Manrope'] text-[#2C2825]">{affordResult.message}</p>
                   </motion.div>
-                )}
-              </CardContent>
-            </Card>
-          </motion.div>
-
-          {/* Alerts */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.4 }}
-            className="md:col-span-1 lg:col-span-2"
-          >
-            <Card className="surface-card border-[#E6E3D8] h-full" data-testid="alerts-card">
-              <CardHeader>
-                <CardTitle className="text-lg font-['Outfit'] text-[#2C2825] flex items-center space-x-2">
-                  <AlertCircle className="w-5 h-5 text-[#CC6C5B]" />
-                  <span>Smart Alerts</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {alerts.length === 0 ? (
-                  <p className="text-sm text-[#6E6A64] font-['Manrope']">No new alerts</p>
-                ) : (
-                  <div className="space-y-3">
-                    {alerts.map((alert) => (
-                      <div
-                        key={alert.id}
-                        className="p-3 bg-[#F0EEE7] rounded-lg border-l-4 border-[#CC6C5B]"
-                      >
-                        <p className="text-sm font-['Manrope'] text-[#2C2825]">{alert.message}</p>
-                      </div>
-                    ))}
-                  </div>
                 )}
               </CardContent>
             </Card>
